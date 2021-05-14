@@ -1,5 +1,5 @@
 import cors from "cors";
-import express from "express";
+import express, { Router } from "express";
 import morgan from "morgan";
 import fs from "fs";
 
@@ -17,7 +17,10 @@ fs.readdir(__dirname + "/routes", (err, files) => {
   }
 
   for (const file of files) {
-    app.use("/", require(__dirname + "/routes/" + file).default);
+    const router = require(__dirname + "/routes/" + file).default;
+    if (typeof router === "function") {
+      app.use("/", router);
+    }
   }
 });
 
